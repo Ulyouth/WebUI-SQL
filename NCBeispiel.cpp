@@ -19,7 +19,7 @@ public:
 
 		// Creates a table, in case it does not yet exist
 		sqlite3_exec(g_db, 
-			"CREATE TABLE IF NOT EXISTS NeuroCheck(name TEXT, value TEXT)", 
+			"CREATE TABLE IF NOT EXISTS NC(name TEXT, value TEXT)", 
 			0, 0, 0);
 
 		// In Windows 10 it automatically redirects to Edge, so avoid that
@@ -96,7 +96,7 @@ public:
 		// List the entries in the SQL table and add them to HTML table
 		sqlite3_stmt *stmt = 0;
 		g_DBStatus = sqlite3_prepare_v2(g_db,
-			"SELECT name, value FROM NeuroCheck",
+			"SELECT name, value FROM NC",
 			-1, &stmt, 0);
 		
 		if (g_DBStatus != SQLITE_OK)
@@ -141,7 +141,7 @@ public:
 			if (newName.length() && newValue.length()) {
 				// Add the new entry to the SQL table
 				std::ostringstream cmd;
-				cmd << "INSERT INTO NeuroCheck (name, value) VALUES('" <<
+				cmd << "INSERT INTO NC (name, value) VALUES('" <<
 					newName << "', '" << newValue << "')";
 				sqlite3_exec(g_db, cmd.str().c_str(), 0, 0, 0);
 
