@@ -55,7 +55,7 @@ cleanup:
 BOOL IWB2SendRequest(LPCSTR lpUrl, LPCSTR lpAgent, LPCSTR lpData, IWebBrowser2 **ppBrowser, DWORD dwTimeout, 
 	BOOL bVisible)
 {
-	// Checa se já existe uma instância do browser
+	// Checa se jÃ¡ existe uma instÃ¢ncia do browser
 	if (!*ppBrowser) {
 		HRESULT hr = CoCreateInstance(&CLSID_InternetExplorer, 0, CLSCTX_LOCAL_SERVER,
 			&IID_IWebBrowser2, ppBrowser);
@@ -95,10 +95,10 @@ BOOL IWB2SendRequest(LPCSTR lpUrl, LPCSTR lpAgent, LPCSTR lpData, IWebBrowser2 *
 	if (FAILED(hr))
 		goto cleanup;
 
-	// Espera até que a página tenha carregado por completo
+	// Espera atÃ© que a pÃ¡gina tenha carregado por completo
 	bRes = WaitPageLoad(ppBrowser, dwTimeout);
 
-	// Torna o browser visível
+	// Torna o browser visÃ­vel
 	if (bVisible)
 		(*ppBrowser)->lpVtbl->put_Visible(*ppBrowser, VARIANT_TRUE);
 
@@ -113,11 +113,11 @@ cleanup:
 LPVOID IWB2GetFileData(LPCSTR lpUrl, LPCSTR lpAgent, LPCSTR lpData, IWebBrowser2 **ppBrowser, 
 	DWORD dwTimeout, BOOL bVisible, LPDWORD lpdwFileSize)
 {
-	// Envia a requisição
+	// Envia a requisiÃ§Ã£o
 	if (!IWB2SendRequest(lpUrl, lpAgent, lpData, ppBrowser, dwTimeout, bVisible))
 		return 0;
 	
-	// Obtém a página resultante
+	// ObtÃ©m a pÃ¡gina resultante
 	LPVOID lpPage = 0;
 	IDispatch *pDispatch = 0;
 	HRESULT hr = (*ppBrowser)->lpVtbl->get_Document(*ppBrowser, &pDispatch);
@@ -125,7 +125,7 @@ LPVOID IWB2GetFileData(LPCSTR lpUrl, LPCSTR lpAgent, LPCSTR lpData, IWebBrowser2
 	if (FAILED(hr))
 		return 0;
 	
-	// Cria um objeto stream para acessar o código fonte da página
+	// Cria um objeto stream para acessar o cÃ³digo fonte da pÃ¡gina
 	IPersistStreamInit *pStreamInit = 0;
 	IStream *pStream = 0;
 
@@ -139,20 +139,20 @@ LPVOID IWB2GetFileData(LPCSTR lpUrl, LPCSTR lpAgent, LPCSTR lpData, IWebBrowser2
 	if (FAILED(hr))
 		goto cleanup;
 	
-	// Salva o código fonte no stream
+	// Salva o cÃ³digo fonte no stream
 	hr = pStreamInit->lpVtbl->Save(pStreamInit, pStream, FALSE);
 
 	if (FAILED(hr))
 		goto cleanup;
 
-	// Obtém o tamanho do código fonte
+	// ObtÃ©m o tamanho do cÃ³digo fonte
 	STATSTG Stat;
 	hr = pStream->lpVtbl->Stat(pStream, &Stat, STATFLAG_NONAME);
 
 	if (FAILED(hr))
 		goto cleanup;
 	
-	// Reserva espaço na memória para o código fonte
+	// Reserva espaÃ§o na memÃ³ria para o cÃ³digo fonte
 	lpPage = malloc((size_t)Stat.cbSize.QuadPart);
 
 	if (!lpPage)
@@ -165,7 +165,7 @@ LPVOID IWB2GetFileData(LPCSTR lpUrl, LPCSTR lpAgent, LPCSTR lpData, IWebBrowser2
 	if (FAILED(hr))
 		goto cleanup;
 
-	// Lê o conteúdo do stream
+	// LÃª o conteÃºdo do stream
 	DWORD dwRead = 0;
 	hr = pStream->lpVtbl->Read(pStream, lpPage, (ULONG)Stat.cbSize.QuadPart, &dwRead);
 
@@ -174,21 +174,6 @@ LPVOID IWB2GetFileData(LPCSTR lpUrl, LPCSTR lpAgent, LPCSTR lpData, IWebBrowser2
 	}
 
 	*lpdwFileSize = (DWORD)Stat.cbSize.QuadPart;
-
-	/*HANDLE hFile = CreateFile("F:\\Programming\\Projects\\CataLista3\\Release\\Logs\\ae.htm", 
-		GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-	WriteFile(hFile, lpPage, dwRead, &dwRead, 0);
-	CloseHandle(hFile);*/
-
-	/*if (((PBYTE)lpPage)[0] == 0xFF && ((PBYTE)lpPage)[1] == 0xFE) {
-		MessageBox(0, "UTF16LE", 0, 0);
-	}
-	else if (((PBYTE)lpPage)[0] == 0xFE && ((PBYTE)lpPage)[1] == 0xFF) {
-		MessageBox(0, "UTF16BE", 0, 0);
-	}
-	else if (((PBYTE)lpPage)[0] == 0xEF && ((PBYTE)lpPage)[1] == 0xBB && ((PBYTE)lpPage)[2] == 0xBF) {
-		MessageBox(0, "UTF8", 0, 0);
-	}*/
 
 cleanup:
 	if (pStream) pStream->lpVtbl->Release(pStream);
@@ -321,10 +306,6 @@ BOOL IWB2ExecScript(IWebBrowser2 **ppBrowser, LPCSTR lpScript, DWORD dwTimeOut, 
 
 	hr = pHTMLWnd->lpVtbl->Invoke(pHTMLWnd, DispID, &IID_NULL, 0, DISPATCH_METHOD,
 		&DispParams, pvtRes, &ExcepInfo, &nArgErr);
-
-	/*char teste[128];
-	sprintf_s(teste, sizeof(teste), "hr=0x%.8X vtRes.vt=%d", hr, pvtRes->vt);
-	MessageBox(0, teste, 0, 0);*/
 
 	if (FAILED(hr))
 		goto cleanup;
@@ -502,7 +483,7 @@ BOOL IWB2SetElementProp(IWebBrowser2 **ppBrowser, LPCSTR lpName, LPCSTR lpProp, 
 
 IHTMLElement *IWB2GetElement(IWebBrowser2 **ppBrowser, LPCSTR lpName, DWORD dwMethod)
 {
-	// Obtém a página atual no navegador
+	// ObtÃ©m a pÃ¡gina atual no navegador
 	IDispatch *pDispatch = 0;
 	HRESULT hr = (*ppBrowser)->lpVtbl->get_Document(*ppBrowser, &pDispatch);
 
@@ -519,13 +500,13 @@ IHTMLElement *IWB2GetElement(IWebBrowser2 **ppBrowser, LPCSTR lpName, DWORD dwMe
 	if (FAILED(hr))
 		goto cleanup;
 
-	// Obtém a lista completa de elementos contidos na página
+	// ObtÃ©m a lista completa de elementos contidos na pÃ¡gina
 	hr = pHTMLDoc->lpVtbl->get_all(pHTMLDoc, &pElements);
 
 	if (FAILED(hr))
 		goto cleanup;
 
-	// Obtém a quantidade de elementos
+	// ObtÃ©m a quantidade de elementos
 	int nCount = 0;
 	hr = pElements->lpVtbl->get_length(pElements, &nCount);
 
@@ -557,7 +538,7 @@ IHTMLElement *IWB2GetElement(IWebBrowser2 **ppBrowser, LPCSTR lpName, DWORD dwMe
 		else
 			VariantCopy(&vtName, &vtIndex);
 
-		// Obtém o elemento atual
+		// ObtÃ©m o elemento atual
 		hr = pElements->lpVtbl->item(pElements, vtName, vtIndex, &pDispatch);
 
 		if (FAILED(hr))
